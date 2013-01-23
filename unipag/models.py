@@ -9,7 +9,12 @@ def objects_from_json(json_content, api_key=None):
         obj = json_content.get('object', None)
         if obj:
             id = json_content['id']
-            klass = {'invoice': Invoice, 'payment': Payment, 'event': Event}.get(obj, UnipagObject)
+            klass = {
+                'invoice': Invoice,
+                'payment': Payment,
+                'event': Event,
+                'connection': Connection,
+            }.get(obj, UnipagObject)
             return klass(api_key=api_key, id=id).load_from(json_content)
         else:
             return json_content
@@ -37,7 +42,9 @@ class UnipagObject(object):
         return setattr(self, key, value)
 
     def __eq__(self, other):
-        if not hasattr(other, '_values') or len(self._values) != len(other._values):
+        if not hasattr(other, '_values'):
+            return False
+        if len(self._values) != len(other._values):
             return False
         for k, v in self._values.items():
             if not hasattr(other, k) or self._values[k] != other._values[k]:
@@ -50,7 +57,8 @@ class UnipagObject(object):
 
     def instance_url(self):
         assert self.id is not None, 'Unable to determine instance URL, '\
-                                    'because %s.id is None.' % self.__class__.__name__
+                                    'because %s.id is None.' \
+                                    '' % self.__class__.__name__
         return '%s/%s' % (self.class_url(), self.id)
 
     def load_from(self, dikt):
@@ -78,15 +86,24 @@ class CreatableObject(UnipagObject):
 class UpdatableObject(UnipagObject):
     def save(self):
         if self.id:
-            response = API(self.api_key).request('post', self.instance_url(), params=self._values)
+            response = API(self.api_key).request(
+                'post',
+                self.instance_url(),
+                params=self._values
+            )
         else:
-            response = API(self.api_key).request('post', self.__class__.class_url(), params=self._values)
+            response = API(self.api_key).request(
+                'post',
+                self.__class__.class_url(),
+                params=self._values
+            )
         return self.load_from(response)
 
 class ListableObject(UnipagObject):
     @classmethod
-    def list(cls, **kwargs):
-        return [cls()]
+    def list(cls, api_key=None, **kwargs):
+        response = API(api_key).request('get', cls.class_url(), kwargs)
+        return objects_from_json(response, api_key=api_key)
 
 class RemovableObject(UnipagObject):
     def delete(self):
@@ -95,12 +112,17 @@ class RemovableObject(UnipagObject):
 
 class RestorableObject(UnipagObject):
     def undelete(self):
-        response = API(self.api_key).request('post', self.instance_url(), params={'deleted': False})
+        response = API(self.api_key).request(
+            'post',
+            self.instance_url(),
+            params={'deleted': False}
+        )
         return self.load_from(response)
 
 # -------------- User objects -------------- #
 
-class Invoice(CreatableObject, UpdatableObject, ListableObject, RemovableObject, RestorableObject):
+class Invoice(CreatableObject, UpdatableObject, ListableObject,
+              RemovableObject, RestorableObject):
     @classmethod
     def create(cls, api_key=None, **kwargs):
         if 'currency' not in kwargs:

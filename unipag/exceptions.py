@@ -1,7 +1,8 @@
 class UnipagException(Exception):
     """Parent for all Unipag exceptions."""
 
-    def __init__(self, msg=None, http_code=None, http_body=None, json_body=None):
+    def __init__(self, msg=None, http_code=None, http_body=None,
+                 json_body=None):
         super(UnipagException, self).__init__(msg)
         self.http_code = http_code
         self.http_body = http_body
