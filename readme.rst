@@ -1,6 +1,9 @@
 Unipag.py - Unipag Client for Python
 ====================================
 
+.. image:: https://travis-ci.org/unipag/unipag-python.png?branch=master
+        :target: https://travis-ci.org/unipag/unipag-python
+
 Installation
 ------------
 

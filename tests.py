@@ -10,15 +10,15 @@ class LiveAPITest(TestCase):
 
     def test_get_connections(self):
         connections = unipag.Connection.list()
-        self.assertIsInstance(connections, list)
+        self.assertTrue(isinstance(connections, list))
         self.assertGreater(len(connections), 0)
         for conn in connections:
-            self.assertIsInstance(conn, unipag.Connection)
+            self.assertTrue(isinstance(conn, unipag.Connection))
 
     def test_invoices(self):
         invoice = unipag.Invoice(amount=1, currency='USD').save()
         invoice2 = unipag.Invoice.get(id=invoice.id)
-        self.assertIsInstance(invoice2, unipag.Invoice)
+        self.assertTrue(isinstance(invoice2, unipag.Invoice))
         self.assertEqual(invoice, invoice2)
         invoice2.delete()
         self.assertFalse(invoice.deleted)
@@ -43,8 +43,8 @@ class LiveAPITest(TestCase):
             )
         # Check that only payments linked to invoice are returned
         payments = unipag.Payment.list(invoice=invoice.id)
-        self.assertIsInstance(payments, list)
+        self.assertTrue(isinstance(payments, list))
         self.assertEqual(len(payments), 3)
         for p in payments:
-            self.assertIsInstance(p, unipag.Payment)
+            self.assertTrue(isinstance(p, unipag.Payment))
             self.assertEqual(p.invoice, invoice.id)
