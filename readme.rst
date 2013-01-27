@@ -17,4 +17,4 @@ Report bugs
 
 #. Report issues to the project's `Issues Tracking`_ on Github.
 
-.. _`Issues Tracking`: http://github.com/ivelum/unipag.py/issues
+.. _`Issues Tracking`: https://github.com/unipag/unipag.py/issues
