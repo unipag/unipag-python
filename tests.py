@@ -11,7 +11,7 @@ class LiveAPITest(TestCase):
     def test_get_connections(self):
         connections = unipag.Connection.list()
         self.assertTrue(isinstance(connections, list))
-        self.assertGreater(len(connections), 0)
+        self.assertTrue(len(connections) > 0)
         for conn in connections:
             self.assertTrue(isinstance(conn, unipag.Connection))
 
