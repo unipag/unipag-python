@@ -7,7 +7,6 @@ class LiveAPITest(TestCase):
     def setUp(self):
         # unittest user, live mode, secret
         defaults.api_key = 'sdEzLtip2wkZusq7MDNBHs3C'
-        defaults.api_url = 'http://03.dev.ivelum.com:8001/v1'
 
     def test_get_connections(self):
         connections = unipag.Connection.list()

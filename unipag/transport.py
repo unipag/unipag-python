@@ -4,6 +4,7 @@ from .exceptions import *
 from .version import version
 import warnings
 import textwrap
+import urllib
 
 try:
     import simplejson as json
@@ -24,7 +25,6 @@ except ImportError:
             'we recommend to install requests, if possible.'
         )
     )
-    import urllib
     import urllib2
     _lib = 'urllib2'
     _lib_ver = urllib2.__version__
@@ -37,6 +37,24 @@ class API(object):
 
     def url(self, url):
         return '%s%s' % (self.base_url, url)
+
+    def requests_request(self, method, url, data, headers, timeout):
+        if method == 'get':
+            abs_url = '%s?%s' % (url, urllib.urlencode(data))
+            params = {}
+        else:
+            abs_url = url
+            params = data
+        response = _session.request(
+            method,
+            abs_url,
+            data=params,
+            headers=headers,
+            timeout=timeout
+        )
+        http_code = response.status_code
+        http_body = response.content
+        return http_code, http_body
 
     def urllib2_request(self, method, url, data, headers, timeout):
         params = urllib.urlencode(data)
@@ -98,17 +116,16 @@ class API(object):
                 data[k] = v
 
         # Send request to API and handle communication errors
+        timeout = 60
         if _lib == 'requests':
             try:
-                response = _session.request(
+                http_code, http_body = self.requests_request(
                     method,
                     abs_url,
                     data=data,
                     headers=headers,
-                    timeout=60
+                    timeout=timeout
                 )
-                http_code = response.status_code
-                http_body = response.content
             except requests.RequestException as e:
                 raise ConnectionError(
                     'Cannot connect to Unipag API using URL %s' % abs_url
@@ -120,7 +137,7 @@ class API(object):
                     abs_url,
                     data=data,
                     headers=headers,
-                    timeout=60
+                    timeout=timeout
                 )
             except urllib2.URLError as e:
                 raise ConnectionError(
