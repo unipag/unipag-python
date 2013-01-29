@@ -149,7 +149,7 @@ class API(object):
         # django runserver. The following 2 lines are just a quick workaround.
         # TODO: investigate and fix.
         if http_code == 401:
-            raise Unauthorized('TODO: Return normal error message here.')
+            raise Unauthorized('API key you provided is not active.')
 
         try:
             json_body = json.loads(http_body)
