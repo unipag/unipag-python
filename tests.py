@@ -68,7 +68,7 @@ class LiveAPITest(TestCase):
             u'obj': {
                 u'int_key': 42,
                 u'float_key': 90.0,
-                u'str_key': u'Wazzup',
+                u'str_key': u'®',
                 u'array': [1, 2, False],
                 u'obj': {u'None': None}
             }
@@ -84,4 +84,4 @@ class LiveAPITest(TestCase):
         self.assertEqual(inv2.amount, 3.2)
         self.assertEqual(inv2.currency, 'RUB')
         self.assertEqual(inv2.description, u'®')
-        self.assertDictEqual(test_dict, inv2.custom_data)
+        self.assertEqual(test_dict, inv2.custom_data)
