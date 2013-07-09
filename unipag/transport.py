@@ -135,6 +135,7 @@ class API(object):
         headers = {
             'Authorization': 'Basic %s' % b64encode('%s:' % self.api_key),
             'User-Agent': 'Unipag Client for Python, v%s' % version,
+            'Content-Type': 'application/x-www-form-urlencoded',
             'X-Unipag-User-Agent-Info': json.dumps(client_info)
         }
 
