@@ -5,11 +5,7 @@ from .version import version
 import warnings
 import textwrap
 import urllib
-
-try:
-    import simplejson as json
-except ImportError:
-    import json
+import json
 
 # TODO: use urlfetch for Google App Engine
 try:
@@ -28,6 +24,33 @@ except ImportError:
     import urllib2
     _lib = 'urllib2'
     _lib_ver = urllib2.__version__
+
+
+def urlify(params, prefix=''):
+    def is_number(s):
+        try:
+            float(s)
+            return True
+        except ValueError:
+            return False
+
+    result = {}
+    items = params.items() if isinstance(params, dict) else enumerate(params)
+    for k, v in items:
+        key = '%s__%s' % (prefix, k) if prefix else k
+        if isinstance(v, dict) or isinstance(v, list):
+            result.update(urlify(v, key))
+        elif isinstance(v, bool):
+            result[key] = 'true' if v else 'false'
+        elif v is None:
+            result[key] = 'null'
+        elif isinstance(v, basestring) and (v in ('true', 'false', 'null')
+                                            or is_number(v)):
+            result[key] = '"%s"' % v
+        else:
+            result[key] = v
+    return result
+
 
 class API(object):
     def __init__(self, key=None, base_url=None):
@@ -109,11 +132,7 @@ class API(object):
             'X-Unipag-User-Agent-Info': json.dumps(client_info)
         }
 
-        # Do not pass params with None values
-        data = {}
-        for k, v in params.items():
-            if v is not None:
-                data[k] = v
+        data = urlify(params)
 
         # Send request to API and handle communication errors
         timeout = 60
