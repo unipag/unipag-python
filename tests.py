@@ -1,3 +1,5 @@
+#! -*- coding: utf-8 -*-
+
 from random import randrange
 from unittest import TestCase
 import unipag
@@ -48,3 +50,38 @@ class LiveAPITest(TestCase):
         for p in payments:
             self.assertTrue(isinstance(p, unipag.Payment))
             self.assertEqual(p.invoice, invoice.id)
+
+    def test_invoice_custom_data(self):
+        test_dict = {
+            u'int': 1,
+            u'float': 3.14159,
+            u'str': u'Hi there',
+            u'None': None,
+            u'true': True,
+            u'false': False,
+            u'int_str': u'2',
+            u'float_str': u'2.71828',
+            u'None_str': u'None',
+            u'true_str': u'true',
+            u'false_str': u'false',
+            u'array': [1, 1.5, u'a', None, True],
+            u'obj': {
+                u'int_key': 42,
+                u'float_key': 90.0,
+                u'str_key': u'Wazzup',
+                u'array': [1, 2, False],
+                u'obj': {u'None': None}
+            }
+        }
+        inv1 = unipag.Invoice.create(
+            amount=3.2,
+            currency='RUB',
+            description=u'®',
+            custom_data=test_dict,
+        )
+        self.assertDictEqual(test_dict, inv1.custom_data)
+        inv2 = unipag.Invoice.get(id=inv1.id)
+        self.assertEqual(inv2.amount, 3.2)
+        self.assertEqual(inv2.currency, 'RUB')
+        self.assertEqual(inv2.description, u'®')
+        self.assertDictEqual(test_dict, inv2.custom_data)
