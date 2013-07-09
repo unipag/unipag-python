@@ -79,7 +79,7 @@ class LiveAPITest(TestCase):
             description=u'®',
             custom_data=test_dict,
         )
-        self.assertDictEqual(test_dict, inv1.custom_data)
+        self.assertEqual(test_dict, inv1.custom_data)
         inv2 = unipag.Invoice.get(id=inv1.id)
         self.assertEqual(inv2.amount, 3.2)
         self.assertEqual(inv2.currency, 'RUB')
