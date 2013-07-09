@@ -44,9 +44,15 @@ def urlify(params, prefix=''):
             result[key] = 'true' if v else 'false'
         elif v is None:
             result[key] = 'null'
-        elif isinstance(v, basestring) and (v in ('true', 'false', 'null')
-                                            or is_number(v)):
-            result[key] = '"%s"' % v
+        elif isinstance(v, basestring):
+            if v in ('true', 'false', 'null') or is_number(v):
+                v = '"%s"' % v
+            if isinstance(v, unicode):
+                v = v.encode('utf8')
+            elif isinstance(v, str):
+                # Must be utf-8, raise exception if it isn't
+                v.decode('utf8')
+            result[key] = v
         else:
             result[key] = v
     return result
