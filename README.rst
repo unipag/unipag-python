@@ -42,7 +42,7 @@ Sample usage
 Create invoice
 ~~~~~~~~~~~~~~
 
-::
+.. code:: python
 
     import unipag
     import unipag.defaults
@@ -63,7 +63,7 @@ Install Unipag widget
 Try our widget for payments workflow handling. It's quite optional, but you
 might find it handy and time-saving.
 
-::
+.. code:: html
 
     <script type="text/javascript"
         src="//d3oe3cumn3db7.cloudfront.net/uw3/js/uw3.min.js"
@@ -84,7 +84,7 @@ Create a standalone page on your website which will handle events sent by
 Unipag. Register URL of this page at `<https://my.unipag.com>`_ > Settings > Webhooks.
 Initialize page code as following (example for Django):
 
-::
+.. code:: python
 
     import unipag
     import unipag.defaults
@@ -126,7 +126,7 @@ Usage of invoice "custom_data" property
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Invoice objects have an optional "custom_data" property, which can be used to
-store up to 4KB of arbitrary data in JSON format. You can freely use this field
+store up to 32KB of arbitrary data in JSON format. You can freely use this field
 to store additional information about invoices, which is specific for your
 application.
 
@@ -136,7 +136,7 @@ properly serialized when sending to Unipag and deserialized when fetching them
 back. Consider the following examples, all of them are valid usages of
 custom_data property:
 
-::
+.. code:: python
 
     import unipag
     import unipag.defaults
