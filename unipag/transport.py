@@ -170,13 +170,6 @@ class API(object):
                     'Cannot connect to Unipag API using URL %s' % abs_url
                 )
 
-        # For some reason, in live environment http body is not returned 
-        # when 401. This behaviour is not reproduced when using development 
-        # django runserver. The following 2 lines are just a quick workaround.
-        # TODO: investigate and fix.
-        if http_code == 401:
-            raise Unauthorized('API key you provided is not active.')
-
         try:
             json_body = json.loads(http_body)
         except Exception as e:
