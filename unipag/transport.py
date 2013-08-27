@@ -210,10 +210,12 @@ class API(object):
                 raise BadRequest(err_msg, http_code, http_body, json_body)
             elif http_code == 401:
                 raise Unauthorized(err_desc, http_code, http_body, json_body)
+            elif http_code == 403:
+                raise Forbidden(err_desc, http_code, http_body, json_body)
             elif http_code == 404:
                 raise NotFound(err_desc, http_code, http_body, json_body)
             elif http_code == 405:
-                raise NotFound(err_desc, http_code, http_body, json_body)
+                raise MethodNotAllowed(err_desc, http_code, http_body, json_body)
             elif http_code == 500:
                 raise InternalError(err_desc, http_code, http_body, json_body)
             elif http_code == 503:

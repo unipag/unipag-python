@@ -20,11 +20,14 @@ class Unauthorized(UnipagException):
 class BadRequest(UnipagException):
     """Some of parameters passed to Unipag were invalid."""
 
+class Forbidden(UnipagException):
+    """Requested action is not allowed."""
+
 class NotFound(UnipagException):
     """Requested object does not exist in Unipag."""
 
 class MethodNotAllowed(UnipagException):
-    """Requested object does not exist in Unipag."""
+    """Requested method is not allowed for this object."""
 
 class InternalError(UnipagException):
     """Internal Unipag error."""
