@@ -110,6 +110,11 @@ class RemovableObject(UnipagObject):
         response = API(self.api_key).request('delete', self.instance_url())
         return self.load_from(response)
 
+    @classmethod
+    def delete_id(cls, id, api_key=None):
+        instance = cls(api_key=api_key, id=id)
+        return instance.delete()
+
 class RestorableObject(UnipagObject):
     def undelete(self):
         response = API(self.api_key).request(

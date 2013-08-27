@@ -3,7 +3,8 @@
 from random import randrange
 from unittest import TestCase
 import unipag
-from unipag import defaults
+from unipag import defaults, NotFound, Unauthorized
+
 
 class LiveAPITest(TestCase):
     def setUp(self):
@@ -85,3 +86,29 @@ class LiveAPITest(TestCase):
         self.assertEqual(inv2.currency, 'RUB')
         self.assertEqual(inv2.description, u'®')
         self.assertEqual(test_dict, inv2.custom_data)
+
+    def test_delete_non_existing_invoice(self):
+        try:
+            unipag.Invoice.delete_id("111242424242")
+        except NotFound as e:
+            self.assertEqual(404, e.http_code)
+            self.assertTrue('error' in e.json_body)
+        except Exception as e:
+            self.fail(
+                "NotFound exception expected, but actual was %s" % type(e)
+            )
+        else:
+            self.fail('No exception was thrown')
+
+    def test_delete_with_wrong_api_key(self):
+        try:
+            unipag.Invoice.delete_id("111242424242", api_key="wrong-key")
+        except Unauthorized as e:
+            self.assertEqual(401, e.http_code)
+            self.assertTrue('error' in e.json_body)
+        except Exception as e:
+            self.fail(
+                "Unauthorized exception expected, but actual was %s" % type(e)
+            )
+        else:
+            self.fail('No exception was thrown')
