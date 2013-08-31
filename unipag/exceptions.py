@@ -1,5 +1,7 @@
 class UnipagException(Exception):
-    """Parent for all Unipag exceptions."""
+    """
+    Parent for all Unipag exceptions.
+    """
 
     def __init__(self, msg=None, http_code=None, http_body=None,
                  json_body=None):
@@ -8,29 +10,62 @@ class UnipagException(Exception):
         self.http_body = http_body
         self.json_body = json_body
 
+
 class ConnectionError(UnipagException):
-    """Unable to connect to Unipag API."""
+    """
+    Unable to connect to Unipag API.
+    """
+
 
 class APIError(UnipagException):
-    """There is a problem with Unipag API."""
+    """
+    There was a problem with Unipag API.
+    """
+
 
 class Unauthorized(UnipagException):
-    """Requested method can not be used with the API key provided."""
+    """
+    You did not provide a valid API key.
+    """
+
 
 class BadRequest(UnipagException):
-    """Some of parameters passed to Unipag were invalid."""
+    """
+    Some of request parameters passed to Unipag were invalid.
+    """
+
 
 class Forbidden(UnipagException):
-    """Requested action is not allowed."""
+    """
+    Access denied.
+    """
+
 
 class NotFound(UnipagException):
-    """Requested object does not exist in Unipag."""
+    """
+    Requested object does not exist in Unipag.
+    """
+
 
 class MethodNotAllowed(UnipagException):
-    """Requested method is not allowed for this object."""
+    """
+    Requested method is not allowed for this object.
+    """
+
 
 class InternalError(UnipagException):
-    """Internal Unipag error."""
+    """
+    Internal Unipag error.
+    """
+
+
+class BadGateway(UnipagException):
+    """
+    Unexpected error occurred while communicating with target payment gateway.
+    """
+
 
 class ServiceUnavailable(UnipagException):
-    """There was a problem while trying to fulfill your request."""
+    """
+    There was a problem while trying to fulfill your request.
+    """

@@ -211,6 +211,8 @@ class API(object):
                 raise MethodNotAllowed(err_desc, http_code, http_body, json_body)
             elif http_code == 500:
                 raise InternalError(err_desc, http_code, http_body, json_body)
+            elif http_code == 502:
+                raise BadGateway(err_desc, http_code, http_body, json_body)
             elif http_code == 503:
                 raise ServiceUnavailable(
                     err_desc, http_code, http_body, json_body
