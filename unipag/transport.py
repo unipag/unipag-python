@@ -60,7 +60,7 @@ def urlify(params, prefix=''):
 
 class API(object):
     def __init__(self, key=None, base_url=None):
-        from .defaults import api_key, api_url
+        from .config import api_key, api_url
         self.api_key = key or api_key
         self.base_url = base_url or api_url
 
@@ -113,9 +113,9 @@ class API(object):
             raise Unauthorized(
                 'You did not provide an API key. There are 2 ways to do it:\n'
                 '\n1) set it globally for all requests via '
-                'unipag.defaults.api_key, like this:\n'
-                '\nimport unipag.defaults\n'
-                '\nunipag.defaults.api_key = "<your-key>"\n'
+                'unipag.config.api_key, like this:\n'
+                '\nimport unipag.config\n'
+                '\nunipag.config.api_key = "<your-key>"\n'
                 '\n'
                 '\n2) pass it to methods which communicate with the API as '
                 'keyword argument, like this:\n'

@@ -3,13 +3,13 @@
 from random import randrange
 from unittest import TestCase
 import unipag
-from unipag import defaults, NotFound, Unauthorized
+from unipag import config, NotFound, Unauthorized
 
 
 class LiveAPITest(TestCase):
     def setUp(self):
         # unittest user, live mode, secret
-        defaults.api_key = 'sdEzLtip2wkZusq7MDNBHs3C'
+        config.api_key = 'sdEzLtip2wkZusq7MDNBHs3C'
 
     def test_get_connections(self):
         connections = unipag.Connection.list()
@@ -51,6 +51,45 @@ class LiveAPITest(TestCase):
         for p in payments:
             self.assertTrue(isinstance(p, unipag.Payment))
             self.assertEqual(p.invoice, invoice.id)
+
+        # Cancel payment and verify that it is cancelled
+        self.assertFalse(payments[0].cancelled)
+        payments[0].delete()
+        self.assertTrue(payments[0].cancelled)
+
+        # Get payment by ID
+        payment = unipag.Payment.get(id=payments[0].id)
+        self.assertTrue(payment.cancelled)
+        self.assertEqual(payment.amount, payments[0].amount)
+
+    def test_default_currency(self):
+        # Try without default currency
+        unipag.config.default_currency = None
+        unipag_calls = {
+            unipag.Invoice.create: {
+                'amount': 42
+            },
+            unipag.Payment.create: {
+                'amount': 42,
+                'payment_gateway': 'masterbank.ru'
+            },
+        }
+        for method, args in unipag_calls.items():
+            try:
+                method(**args)
+            except unipag.BadRequest as e:
+                self.assertTrue(e.json_body)
+            except Exception as e:
+                self.fail('BadRequest exception excepted, but %s was '
+                          'raised' % e.__class__)
+            else:
+                self.fail('No exception raised')
+
+        # Try the same with default currency
+        unipag.config.default_currency = 'RUB'
+        for method, args in unipag_calls.items():
+            instance = method(**args)
+            self.assertEqual(unipag.config.default_currency, instance.currency)
 
     def test_invoice_custom_data(self):
         test_dict = {

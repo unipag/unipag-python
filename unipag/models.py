@@ -1,5 +1,6 @@
 from .transport import API, json
 
+
 def objects_from_json(json_content, api_key=None):
     if isinstance(json_content, basestring):
         return objects_from_json(json.loads(json_content))
@@ -18,6 +19,7 @@ def objects_from_json(json_content, api_key=None):
             return klass(api_key=api_key, id=id).load_from(json_content)
         else:
             return json_content
+
 
 class UnipagObject(object):
 
@@ -77,11 +79,16 @@ class UnipagObject(object):
         instance = cls(api_key=api_key, id=id)
         return instance.reload()
 
+
 class CreatableObject(UnipagObject):
     @classmethod
     def create(cls, api_key=None, **kwargs):
+        if 'currency' not in kwargs:
+            from .config import default_currency
+            kwargs.update({'currency': default_currency})
         response = API(api_key).request('post', cls.class_url(), params=kwargs)
         return objects_from_json(response)
+
 
 class UpdatableObject(UnipagObject):
     def save(self):
@@ -99,11 +106,13 @@ class UpdatableObject(UnipagObject):
             )
         return self.load_from(response)
 
+
 class ListableObject(UnipagObject):
     @classmethod
     def list(cls, api_key=None, **kwargs):
         response = API(api_key).request('get', cls.class_url(), kwargs)
         return objects_from_json(response, api_key=api_key)
+
 
 class RemovableObject(UnipagObject):
     def delete(self):
@@ -114,6 +123,7 @@ class RemovableObject(UnipagObject):
     def delete_id(cls, id, api_key=None):
         instance = cls(api_key=api_key, id=id)
         return instance.delete()
+
 
 class RestorableObject(UnipagObject):
     def undelete(self):
@@ -126,24 +136,19 @@ class RestorableObject(UnipagObject):
 
 # -------------- User objects -------------- #
 
+
 class Invoice(CreatableObject, UpdatableObject, ListableObject,
               RemovableObject, RestorableObject):
-    @classmethod
-    def create(cls, api_key=None, **kwargs):
-        if 'currency' not in kwargs:
-            from .defaults import currency
-            kwargs.update({'currency': currency})
-        return super(Invoice, cls).create(api_key=api_key, **kwargs)
+    pass
 
-class Payment(CreatableObject, ListableObject):
-    def refund(self, amount=None):
-        pass
 
-    def cancel(self):
-        pass
+class Payment(CreatableObject, ListableObject, RemovableObject):
+    pass
+
 
 class Connection(ListableObject):
     pass
+
 
 class Event(ListableObject):
     pass
