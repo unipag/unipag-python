@@ -35,14 +35,14 @@ class LiveAPITest(TestCase):
             unipag.Payment.create(
                 amount=randrange(1, invoice.amount),
                 invoice=invoice.id,
-                payment_gateway='masterbank.ru'
+                connection='masterbank.ru'
             )
         # Generate 3 stand-alone payments
         for i in range(3):
             unipag.Payment.create(
                 amount=randrange(1, invoice.amount),
                 currency='RUB',
-                payment_gateway='masterbank.ru'
+                connection='masterbank.ru'
             )
         # Check that only payments linked to invoice are returned
         payments = unipag.Payment.list(invoice=invoice.id)
@@ -71,7 +71,7 @@ class LiveAPITest(TestCase):
             },
             unipag.Payment.create: {
                 'amount': 42,
-                'payment_gateway': 'masterbank.ru'
+                'connection': 'masterbank.ru'
             },
         }
         for method, args in unipag_calls.items():
