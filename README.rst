@@ -45,10 +45,10 @@ Create invoice
 .. code:: python
 
     import unipag
-    import unipag.defaults
+    import unipag.config
 
     # Get your key at https://my.unipag.com
-    unipag.defaults.api_key = '<your-secret-key>'
+    unipag.config.api_key = '<your-secret-key>'
 
     invoice = unipag.Invoice.create(
         amount=42,
@@ -87,11 +87,11 @@ Initialize page code as following (example for Django):
 .. code:: python
 
     import unipag
-    import unipag.defaults
+    import unipag.config
     from django.http import HttpResponse, HttpResponseBadRequest
 
     # Get your key at https://my.unipag.com
-    unipag.defaults.api_key = '<your-secret-key>'
+    unipag.config.api_key = '<your-secret-key>'
 
 
     def handle_unipag_hook(request):
@@ -139,10 +139,10 @@ custom_data property:
 .. code:: python
 
     import unipag
-    import unipag.defaults
+    import unipag.config
 
     # Get your key at https://my.unipag.com
-    unipag.defaults.api_key = '<your-secret-key>'
+    unipag.config.api_key = '<your-secret-key>'
 
     invoice = unipag.Invoice.create(
         amount=42,
